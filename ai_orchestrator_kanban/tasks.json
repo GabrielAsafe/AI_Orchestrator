@@ -1,0 +1,3319 @@
+{
+  "schema_version": 1,
+  "project": {
+    "id": "distributed-ai-orchestrator",
+    "name": "Sistema de IA Distribuída — Orquestrador Genérico",
+    "source_document": "arquitetura_e_plano_orquestracao_integrado.md",
+    "goal": "Implementar um control plane no Raspberry Pi para workers LLM Android, coding autónomo controlado e automação IoT segura."
+  },
+  "columns": [
+    {
+      "id": "backlog",
+      "title": "Backlog",
+      "description": "Ainda não preparado para execução imediata."
+    },
+    {
+      "id": "ready",
+      "title": "Ready",
+      "description": "Dependências satisfeitas e pronto para começar."
+    },
+    {
+      "id": "developing",
+      "title": "Developing",
+      "description": "Implementação em curso."
+    },
+    {
+      "id": "testing",
+      "title": "Testing",
+      "description": "Implementação concluída; validação/testes em curso."
+    },
+    {
+      "id": "blocked",
+      "title": "Blocked",
+      "description": "Impedido por dependência, erro ou decisão pendente."
+    },
+    {
+      "id": "done",
+      "title": "Done",
+      "description": "Critérios de aceitação e testes concluídos."
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M0",
+      "title": "Baseline e decisões"
+    },
+    {
+      "id": "M1",
+      "title": "Workers como appliances de inferência"
+    },
+    {
+      "id": "M2",
+      "title": "Domain contracts"
+    },
+    {
+      "id": "M3",
+      "title": "Worker Registry + Health"
+    },
+    {
+      "id": "M4",
+      "title": "Model Client"
+    },
+    {
+      "id": "M5",
+      "title": "Router + Scheduler"
+    },
+    {
+      "id": "M6",
+      "title": "Job lifecycle + SQLite"
+    },
+    {
+      "id": "M7",
+      "title": "Generic LLM service"
+    },
+    {
+      "id": "M8",
+      "title": "Coding adapter v1"
+    },
+    {
+      "id": "M9",
+      "title": "IoT adapter em shadow mode"
+    },
+    {
+      "id": "M10",
+      "title": "IoT LOW-risk execution"
+    },
+    {
+      "id": "M11",
+      "title": "Reliability + observability"
+    },
+    {
+      "id": "M12",
+      "title": "Autonomia ampliada + Project Intelligence"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "M0-001",
+      "milestone": "M0",
+      "area": "foundation",
+      "kind": "foundation",
+      "title": "Criar repositório do orquestrador",
+      "description": "Criar o repositório principal e a estrutura mínima, sem antecipar módulos desnecessários.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "Repositório inicializa limpo",
+        "README identifica objetivo e boundaries",
+        "Estrutura mínima permite src/tests/config/docs"
+      ],
+      "test_plan": [
+        "Clone limpo abre sem erros",
+        "git status limpo"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-002",
+      "milestone": "M0",
+      "area": "platform",
+      "kind": "infrastructure",
+      "title": "Inventariar ambiente real do Raspberry",
+      "description": "Congelar Python, arquitetura, modelo do Pi, Git e SQLite.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-001"
+      ],
+      "acceptance_criteria": [
+        "python3 --version registado",
+        "uname -m registado",
+        "modelo do Pi registado",
+        "sqlite3/git versions registadas"
+      ],
+      "test_plan": [
+        "Executar inventário no Pi e anexar saída"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-003",
+      "milestone": "M0",
+      "area": "dependencies",
+      "kind": "development",
+      "title": "Definir manifesto mínimo de dependências",
+      "description": "Escolher somente dependências necessárias, priorizando stdlib/pure Python compatível com armv6l.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-002"
+      ],
+      "acceptance_criteria": [
+        "Cada dependência tem justificativa",
+        "Compatibilidade no Pi comprovada",
+        "Nenhum framework pesado sem necessidade"
+      ],
+      "test_plan": [
+        "Instalação em ambiente limpo",
+        "Import smoke test"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-004",
+      "milestone": "M0",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Configurar pytest e smoke test",
+      "description": "Estabelecer a base de testes antes dos componentes do domínio.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-003"
+      ],
+      "acceptance_criteria": [
+        "pytest executa no Raspberry",
+        "Existe smoke test",
+        "Comando de testes documentado"
+      ],
+      "test_plan": [
+        "Executar suite em clone limpo"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-005",
+      "milestone": "M0",
+      "area": "configuration",
+      "kind": "development",
+      "title": "Escolher formato e política de configuração",
+      "description": "Definir TOML ou YAML, precedência, defaults e separação de secrets.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-001"
+      ],
+      "acceptance_criteria": [
+        "Formato único escolhido",
+        "Examples versionados",
+        "Secrets fora do repo",
+        "Schema/versionamento previstos"
+      ],
+      "test_plan": [
+        "Carregar config válida",
+        "Falhar claramente em config inválida"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-006",
+      "milestone": "M0",
+      "area": "architecture",
+      "kind": "documentation",
+      "title": "Criar ADRs iniciais",
+      "description": "Registar decisões já fechadas.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M0-001"
+      ],
+      "acceptance_criteria": [
+        "ADRs cobrem SQLite-first, Pi control plane, workers HTTP, no direct LLM shell, IoT policy gate"
+      ],
+      "test_plan": [
+        "Revisão manual contra arquitetura"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-007",
+      "milestone": "M0",
+      "area": "observability",
+      "kind": "development",
+      "title": "Definir convenção de IDs e logs",
+      "description": "Fixar job_id, attempt_id, request_id e campos mínimos.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M0-001"
+      ],
+      "acceptance_criteria": [
+        "Formato de IDs definido",
+        "Campos de log documentados",
+        "Secrets proibidos em logs"
+      ],
+      "test_plan": [
+        "Gerar IDs e validar formato",
+        "Fixture de log sem secrets"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M0-008",
+      "milestone": "M0",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Criar estrutura de fixtures de testes",
+      "description": "Preparar unit, contract, integration, e2e e fixtures.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M0-004"
+      ],
+      "acceptance_criteria": [
+        "Estrutura existe",
+        "Fixtures não dependem de workers reais",
+        "Testes determinísticos separados de smoke"
+      ],
+      "test_plan": [
+        "pytest descobre diretórios"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-001",
+      "milestone": "M1",
+      "area": "workers",
+      "kind": "infrastructure",
+      "title": "Confirmar configuração manual do llama-server nos dois workers",
+      "description": "Validar comando conhecido de inferência em OPPO e Huawei.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-002"
+      ],
+      "acceptance_criteria": [
+        "OPPO responde",
+        "Huawei responde",
+        "Modelo/path/context/threads registados"
+      ],
+      "test_plan": [
+        "health",
+        "query curta"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-002",
+      "milestone": "M1",
+      "area": "workers",
+      "kind": "infrastructure",
+      "title": "Criar serviço runit do llama-server no OPPO",
+      "description": "Supervisionar llama-server com restart automático.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M1-001"
+      ],
+      "acceptance_criteria": [
+        "sv status mostra run",
+        "Processo é filho do runit",
+        "Logs existem",
+        "Sem segundo processo manual"
+      ],
+      "test_plan": [
+        "sv down/up",
+        "kill e recuperar"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-003",
+      "milestone": "M1",
+      "area": "workers",
+      "kind": "infrastructure",
+      "title": "Criar serviço runit do llama-server no Huawei",
+      "description": "Supervisionar llama-server com configuração própria.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M1-001"
+      ],
+      "acceptance_criteria": [
+        "sv status mostra run",
+        "Processo é filho do runit",
+        "Logs existem",
+        "Sem segundo processo manual"
+      ],
+      "test_plan": [
+        "sv down/up",
+        "kill e recuperar"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-004",
+      "milestone": "M1",
+      "area": "workers",
+      "kind": "infrastructure",
+      "title": "Definir logs e rotação básica do llama-server",
+      "description": "Garantir logs úteis e tamanho controlado.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M1-002",
+        "M1-003"
+      ],
+      "acceptance_criteria": [
+        "stdout/stderr capturados",
+        "Localização documentada",
+        "Retenção definida"
+      ],
+      "test_plan": [
+        "Restart gera log",
+        "Permissões corretas"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-005",
+      "milestone": "M1",
+      "area": "security",
+      "kind": "security",
+      "title": "Fechar autenticação do llama-server",
+      "description": "Provar que inferência exige credencial.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M1-002",
+        "M1-003"
+      ],
+      "acceptance_criteria": [
+        "Sem API key rejeita",
+        "Com API key funciona",
+        "Key chmod 600",
+        "Keys não aparecem nos logs"
+      ],
+      "test_plan": [
+        "curl sem auth",
+        "curl com auth",
+        "grep de segredo em logs"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-006",
+      "milestone": "M1",
+      "area": "workers",
+      "kind": "testing",
+      "title": "Definir health check barato e smoke de geração",
+      "description": "Separar liveness barato de smoke real.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M1-005"
+      ],
+      "acceptance_criteria": [
+        "Health identificado",
+        "Smoke curto definido",
+        "Smoke não roda em alta frequência"
+      ],
+      "test_plan": [
+        "Health sem geração",
+        "Smoke verificável"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-007",
+      "milestone": "M1",
+      "area": "reliability",
+      "kind": "testing",
+      "title": "Provar restart automático dos dois workers",
+      "description": "Matar llama-server e confirmar recuperação.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M1-002",
+        "M1-003",
+        "M1-006"
+      ],
+      "acceptance_criteria": [
+        "OPPO recupera",
+        "Huawei recupera",
+        "Novo PID supervisionado"
+      ],
+      "test_plan": [
+        "kill PID",
+        "health volta"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-008",
+      "milestone": "M1",
+      "area": "reliability",
+      "kind": "testing",
+      "title": "Provar sobrevivência a reboot com inferência",
+      "description": "Reiniciar Android e validar SSH + llama-server sem abrir Termux.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M1-007"
+      ],
+      "acceptance_criteria": [
+        "OPPO reboot -> health -> inference",
+        "Huawei reboot -> health -> inference"
+      ],
+      "test_plan": [
+        "Reboot um de cada vez",
+        "Não abrir Termux"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-009",
+      "milestone": "M1",
+      "area": "network",
+      "kind": "infrastructure",
+      "title": "Estabilizar identidade de rede dos workers",
+      "description": "Escolher endpoints lógicos definitivos, preferencialmente Tailscale/MagicDNS.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M1-008"
+      ],
+      "acceptance_criteria": [
+        "Endpoint estável por worker",
+        "Raspberry acessa ambos",
+        "LAN IP deixa de ser identidade lógica"
+      ],
+      "test_plan": [
+        "Resolver nomes após reboot",
+        "health via endpoint final"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-010",
+      "milestone": "M1",
+      "area": "security",
+      "kind": "security",
+      "title": "Restringir exposição das portas dos workers",
+      "description": "Limitar 8080/8022 às redes/peers pretendidos.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M1-009"
+      ],
+      "acceptance_criteria": [
+        "8080 não público",
+        "8022 administrativo",
+        "ACL documentada"
+      ],
+      "test_plan": [
+        "Conectividade permitida/negada"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-011",
+      "milestone": "M1",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Criar smoke script de worker",
+      "description": "Script shell no Raspberry para health, auth e geração.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M1-005",
+        "M1-006",
+        "M1-009"
+      ],
+      "acceptance_criteria": [
+        "Testa OPPO",
+        "Testa Huawei",
+        "Falha retorna exit != 0",
+        "Não imprime secrets"
+      ],
+      "test_plan": [
+        "Worker healthy",
+        "worker parado",
+        "key errada"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M1-012",
+      "milestone": "M1",
+      "area": "workers",
+      "kind": "documentation",
+      "title": "Registar perfil operacional dos workers",
+      "description": "Congelar capacidades, context limit, max_parallel e performance tier.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M1-008"
+      ],
+      "acceptance_criteria": [
+        "OPPO fast/coding",
+        "Huawei slow/general/IoT",
+        "max_parallel inicial 1",
+        "modelo desacoplado do worker ID"
+      ],
+      "test_plan": [
+        "Revisão contra benchmarks"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-001",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir WorkerSpec",
+      "description": "Contrato estático de worker.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-005",
+        "M1-012"
+      ],
+      "acceptance_criteria": [
+        "id único",
+        "endpoint válido",
+        "max_parallel >= 1",
+        "enabled/capabilities explícitos"
+      ],
+      "test_plan": [
+        "válido/inválido",
+        "serialização"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-002",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir WorkerHealth",
+      "description": "Estado observado separado da configuração.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-001"
+      ],
+      "acceptance_criteria": [
+        "UNKNOWN/HEALTHY/BUSY/DEGRADED/OFFLINE/QUARANTINED",
+        "latency/failures/active_jobs"
+      ],
+      "test_plan": [
+        "cada estado",
+        "contadores"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-003",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir JobSpec e Requirements",
+      "description": "Representar pedidos genéricos sem acoplamento a coding ou IoT.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M0-005"
+      ],
+      "acceptance_criteria": [
+        "job_type, priority, requirements, input, limits, policy",
+        "capabilities/fallback representáveis"
+      ],
+      "test_plan": [
+        "jobs válidos/invalidos"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-004",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir JobState e estados terminais",
+      "description": "Definir lifecycle.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-003"
+      ],
+      "acceptance_criteria": [
+        "CREATED, QUEUED, DISPATCHING, RUNNING, VERIFYING, WAITING_RETRY, SUCCEEDED, FAILED, CANCELLED"
+      ],
+      "test_plan": [
+        "representação estável"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-005",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "testing",
+      "title": "Definir tabela de transições de JobState",
+      "description": "Centralizar transições legais.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-004"
+      ],
+      "acceptance_criteria": [
+        "Transições legais documentadas",
+        "Ilegais rejeitadas",
+        "Terminais não reabrem implicitamente"
+      ],
+      "test_plan": [
+        "Tabela parametrizada"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-006",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir Attempt",
+      "description": "Representar cada tentativa sem sobrescrever histórico.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-003"
+      ],
+      "acceptance_criteria": [
+        "attempt/job/worker/timestamps/error/retryable",
+        "histórico imutável"
+      ],
+      "test_plan": [
+        "criar/finalizar",
+        "retryable"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-007",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir ModelRequest",
+      "description": "Contrato neutro ao llama-server.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-003"
+      ],
+      "acceptance_criteria": [
+        "request_id, prompt/messages, tokens, temperature, stop, timeout, response_mode"
+      ],
+      "test_plan": [
+        "validação de limites",
+        "round-trip"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-008",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir ModelResult e erros separados",
+      "description": "Normalizar respostas bem-sucedidas sem misturar falhas.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-007"
+      ],
+      "acceptance_criteria": [
+        "text/tokens/latency/finish_reason",
+        "erro de transporte não vira sucesso"
+      ],
+      "test_plan": [
+        "resultado completo/parcial"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-009",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir VerificationResult",
+      "description": "Representar checks determinísticos.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-003"
+      ],
+      "acceptance_criteria": [
+        "passed/checks/stdout/stderr/duration/artifacts",
+        "check inclui command_id/exit_code"
+      ],
+      "test_plan": [
+        "agregação pass/fail"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-010",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Definir ActionProposal",
+      "description": "Representar intenção IoT como proposta.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-003"
+      ],
+      "acceptance_criteria": [
+        "action/resource/parameters/reason/expiry",
+        "sem side effect"
+      ],
+      "test_plan": [
+        "parâmetros",
+        "expiração"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-011",
+      "milestone": "M2",
+      "area": "domain",
+      "kind": "development",
+      "title": "Adicionar schema_version aos formatos persistidos",
+      "description": "Preparar evolução dos contratos.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M2-001",
+        "M2-003",
+        "M2-010"
+      ],
+      "acceptance_criteria": [
+        "worker/job/action têm schema_version",
+        "versão desconhecida falha claramente"
+      ],
+      "test_plan": [
+        "round-trip v1",
+        "versão futura"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M2-012",
+      "milestone": "M2",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Consolidar contract test suite",
+      "description": "Testes de invariantes sem HTTP/SQLite/rede.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-002",
+        "M2-005",
+        "M2-006",
+        "M2-008",
+        "M2-009",
+        "M2-010",
+        "M2-011"
+      ],
+      "acceptance_criteria": [
+        "Cobre contratos/transições",
+        "Rápida",
+        "Sem rede"
+      ],
+      "test_plan": [
+        "pytest tests/contract"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-001",
+      "milestone": "M3",
+      "area": "configuration",
+      "kind": "development",
+      "title": "Implementar loader de configuração de workers",
+      "description": "Ler WorkerSpec e validar no arranque.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-001",
+        "M0-005"
+      ],
+      "acceptance_criteria": [
+        "Config inválida impede startup",
+        "Secrets fora do versionado",
+        "Dois workers carregam"
+      ],
+      "test_plan": [
+        "válida",
+        "ID duplicado",
+        "endpoint inválido"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-002",
+      "milestone": "M3",
+      "area": "registry",
+      "kind": "development",
+      "title": "Implementar Worker Registry",
+      "description": "Guardar e consultar spec/health sem scheduling.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M3-001",
+        "M2-002"
+      ],
+      "acceptance_criteria": [
+        "Lookup/listagem",
+        "enabled respeitado",
+        "health separado"
+      ],
+      "test_plan": [
+        "add/load/query",
+        "inexistente",
+        "disabled"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-003",
+      "milestone": "M3",
+      "area": "registry",
+      "kind": "development",
+      "title": "Filtrar workers por capability",
+      "description": "Fornecer candidatos compatíveis.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M3-002"
+      ],
+      "acceptance_criteria": [
+        "Exige todas capabilities",
+        "disabled nunca aparece",
+        "ordem não é scheduling"
+      ],
+      "test_plan": [
+        "matriz capability"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-004",
+      "milestone": "M3",
+      "area": "registry",
+      "kind": "development",
+      "title": "Controlar slots ativos por worker",
+      "description": "Representar max_parallel/ocupação.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M3-002"
+      ],
+      "acceptance_criteria": [
+        "active_jobs >=0",
+        "não excede max_parallel",
+        "release protegido"
+      ],
+      "test_plan": [
+        "reserve/release",
+        "double cases"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-005",
+      "milestone": "M3",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Criar fake HTTP worker configurável",
+      "description": "Simular health/inference/erros deterministicamente.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M0-008"
+      ],
+      "acceptance_criteria": [
+        "healthy/offline/401/500/delay/bad JSON",
+        "Sem worker real"
+      ],
+      "test_plan": [
+        "fixtures start/stop",
+        "cenários"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-006",
+      "milestone": "M3",
+      "area": "health",
+      "kind": "development",
+      "title": "Implementar Health Checker",
+      "description": "Consultar health e atualizar estado.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M3-002",
+        "M3-005"
+      ],
+      "acceptance_criteria": [
+        "Mede latência",
+        "last_error",
+        "timeout config",
+        "sem inferência por check"
+      ],
+      "test_plan": [
+        "healthy",
+        "timeout",
+        "connection refused"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-007",
+      "milestone": "M3",
+      "area": "health",
+      "kind": "development",
+      "title": "Implementar thresholds DEGRADED/OFFLINE/recuperação",
+      "description": "Aplicar falhas consecutivas configuráveis.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M3-006"
+      ],
+      "acceptance_criteria": [
+        "1 failure pode degradar",
+        "N -> OFFLINE",
+        "sucessos recuperam",
+        "N configurável"
+      ],
+      "test_plan": [
+        "sequências parametrizadas"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M3-008",
+      "milestone": "M3",
+      "area": "tooling",
+      "kind": "development",
+      "title": "Criar status view dos workers",
+      "description": "Mostrar estado operacional sem UI web.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M3-003",
+        "M3-004",
+        "M3-007"
+      ],
+      "acceptance_criteria": [
+        "id/status/slots/model/capabilities/latency"
+      ],
+      "test_plan": [
+        "snapshot com fakes"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-001",
+      "milestone": "M4",
+      "area": "model-client",
+      "kind": "development",
+      "title": "Definir classificação de erros do Model Client",
+      "description": "Fixar taxonomy de erros de transporte/HTTP.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-008"
+      ],
+      "acceptance_criteria": [
+        "connection_error, timeout, auth_error, busy, bad_request, server_error, malformed_response, cancelled",
+        "retry hint documentado"
+      ],
+      "test_plan": [
+        "Mapeamento de cenários"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-002",
+      "milestone": "M4",
+      "area": "model-client",
+      "kind": "development",
+      "title": "Implementar transporte HTTP autenticado",
+      "description": "Única camada que conhece endpoint/auth do llama-server.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M3-005",
+        "M4-001",
+        "M2-007"
+      ],
+      "acceptance_criteria": [
+        "Authorization sem logar segredo",
+        "timeout aplicado",
+        "endpoint vem do WorkerSpec"
+      ],
+      "test_plan": [
+        "fake 200",
+        "fake 401",
+        "captura segura"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-003",
+      "milestone": "M4",
+      "area": "model-client",
+      "kind": "development",
+      "title": "Serializar ModelRequest para llama-server",
+      "description": "Mapear contrato interno para API real.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M4-002"
+      ],
+      "acceptance_criteria": [
+        "messages/prompt corretos",
+        "defaults explícitos",
+        "request_id rastreável"
+      ],
+      "test_plan": [
+        "snapshot do payload"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-004",
+      "milestone": "M4",
+      "area": "model-client",
+      "kind": "development",
+      "title": "Normalizar resposta em ModelResult",
+      "description": "Extrair texto, finish_reason, tokens e latência.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M4-003",
+        "M2-008"
+      ],
+      "acceptance_criteria": [
+        "Resposta válida produz ModelResult",
+        "campos opcionais tratados",
+        "raw metadata opcional"
+      ],
+      "test_plan": [
+        "200 normal",
+        "campos ausentes"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-005",
+      "milestone": "M4",
+      "area": "model-client",
+      "kind": "testing",
+      "title": "Tratar erros HTTP, timeout e resposta malformada",
+      "description": "Garantir falhas tipadas.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M4-004",
+        "M4-001"
+      ],
+      "acceptance_criteria": [
+        "401 != 500 != timeout != bad JSON",
+        "erro sensível não é logado indiscriminadamente"
+      ],
+      "test_plan": [
+        "401/400/503/timeout/bad JSON/connection"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-006",
+      "milestone": "M4",
+      "area": "model-client",
+      "kind": "development",
+      "title": "Suportar cancelamento e deadline do request",
+      "description": "Interromper espera quando job expira/cancela.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M4-005"
+      ],
+      "acceptance_criteria": [
+        "Cancelamento tipado",
+        "deadline respeitada"
+      ],
+      "test_plan": [
+        "cancel durante delay",
+        "deadline exceeded"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M4-007",
+      "milestone": "M4",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Smoke do Model Client contra OPPO e Huawei",
+      "description": "Validar compatibilidade real sem contaminar suite determinística.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M1-011",
+        "M4-005"
+      ],
+      "acceptance_criteria": [
+        "Query funciona nos dois",
+        "resultado normalizado",
+        "marcado smoke"
+      ],
+      "test_plan": [
+        "OPPO",
+        "Huawei"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-001",
+      "milestone": "M5",
+      "area": "router",
+      "kind": "development",
+      "title": "Definir mapa job_type -> requirements",
+      "description": "Mapear generic_llm/classify/summarize/iot_intent/coding em capabilities.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M2-003"
+      ],
+      "acceptance_criteria": [
+        "Mapa documentado",
+        "Router não escolhe worker"
+      ],
+      "test_plan": [
+        "Tabela de job types"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-002",
+      "milestone": "M5",
+      "area": "router",
+      "kind": "development",
+      "title": "Implementar Router puro",
+      "description": "Resolver requirements sem rede/side effects.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M5-001"
+      ],
+      "acceptance_criteria": [
+        "Determinístico",
+        "sem side effects",
+        "unknown job type falha"
+      ],
+      "test_plan": [
+        "unit por job type"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-003",
+      "milestone": "M5",
+      "area": "scheduler",
+      "kind": "development",
+      "title": "Implementar filtro de elegibilidade",
+      "description": "Eliminar candidates inválidos.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M3-003",
+        "M3-004",
+        "M5-002"
+      ],
+      "acceptance_criteria": [
+        "disabled/offline/capability/no-slot tratados",
+        "DEGRADED segue policy"
+      ],
+      "test_plan": [
+        "matriz eligibility"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-004",
+      "milestone": "M5",
+      "area": "scheduler",
+      "kind": "development",
+      "title": "Implementar ranking determinístico",
+      "description": "Ordenar preferred worker, performance tier e carga.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M5-003"
+      ],
+      "acceptance_criteria": [
+        "Mesma entrada mesma escolha",
+        "tie-break estável",
+        "razão disponível"
+      ],
+      "test_plan": [
+        "tabela de ranking"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-005",
+      "milestone": "M5",
+      "area": "scheduler",
+      "kind": "development",
+      "title": "Implementar política de fallback",
+      "description": "Permitir substituição somente quando autorizado.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M5-004"
+      ],
+      "acceptance_criteria": [
+        "coding strict não cai em worker incapaz",
+        "generic pode fallback",
+        "allow_fallback respeitado"
+      ],
+      "test_plan": [
+        "Huawei offline",
+        "OPPO busy",
+        "fallback disabled"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-006",
+      "milestone": "M5",
+      "area": "scheduler",
+      "kind": "development",
+      "title": "Definir comportamento sem worker elegível",
+      "description": "Queue vs fail por deadline/policy sem busy-loop.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M5-005"
+      ],
+      "acceptance_criteria": [
+        "Sem candidato não crasha",
+        "pode permanecer queued",
+        "deadline encerra"
+      ],
+      "test_plan": [
+        "no workers",
+        "all busy",
+        "all offline"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-007",
+      "milestone": "M5",
+      "area": "observability",
+      "kind": "development",
+      "title": "Produzir decision trace do scheduler",
+      "description": "Explicar candidatos, rejeições e escolha.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M5-004"
+      ],
+      "acceptance_criteria": [
+        "trace sem secrets",
+        "worker e critérios presentes"
+      ],
+      "test_plan": [
+        "snapshot 2 workers"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M5-008",
+      "milestone": "M5",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Criar suite de decisão completa do scheduler",
+      "description": "Cobrir scheduler sem modelos reais.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M5-002",
+        "M5-005",
+        "M5-006",
+        "M5-007"
+      ],
+      "acceptance_criteria": [
+        "coding -> OPPO",
+        "classify -> Huawei",
+        "Huawei offline -> OPPO",
+        "OPPO busy + strict -> no assignment"
+      ],
+      "test_plan": [
+        "testes parametrizados"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-001",
+      "milestone": "M6",
+      "area": "persistence",
+      "kind": "development",
+      "title": "Definir schema SQLite inicial",
+      "description": "Modelar jobs, attempts e events.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-012"
+      ],
+      "acceptance_criteria": [
+        "Schema versionado",
+        "foreign keys",
+        "timestamps consistentes",
+        "estado consultável"
+      ],
+      "test_plan": [
+        "criar DB",
+        "migration inicial",
+        "FK violation"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-002",
+      "milestone": "M6",
+      "area": "persistence",
+      "kind": "development",
+      "title": "Implementar repositório de jobs",
+      "description": "Persistir/consultar JobSpec + JobState.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-001"
+      ],
+      "acceptance_criteria": [
+        "create/get/update/list queued",
+        "transações adequadas"
+      ],
+      "test_plan": [
+        "CRUD",
+        "concorrência básica"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-003",
+      "milestone": "M6",
+      "area": "persistence",
+      "kind": "development",
+      "title": "Implementar repositório de attempts",
+      "description": "Guardar histórico imutável.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M6-001",
+        "M2-006"
+      ],
+      "acceptance_criteria": [
+        "sem overwrite",
+        "ordem temporal"
+      ],
+      "test_plan": [
+        "create/finalize/list"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-004",
+      "milestone": "M6",
+      "area": "persistence",
+      "kind": "development",
+      "title": "Implementar event log persistente",
+      "description": "Eventos append-only de lifecycle.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M6-001"
+      ],
+      "acceptance_criteria": [
+        "type/payload/timestamp/job/attempt",
+        "append-only"
+      ],
+      "test_plan": [
+        "append/list/order"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-005",
+      "milestone": "M6",
+      "area": "queue",
+      "kind": "development",
+      "title": "Implementar fila persistida em SQLite",
+      "description": "Selecionar QUEUED por prioridade/created_at.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-002"
+      ],
+      "acceptance_criteria": [
+        "Prioridade respeitada",
+        "ordem estável",
+        "sobrevive restart"
+      ],
+      "test_plan": [
+        "prioridades",
+        "reopen DB"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-006",
+      "milestone": "M6",
+      "area": "job-manager",
+      "kind": "development",
+      "title": "Implementar criação e enqueue de job",
+      "description": "Validar, persistir, emitir events e CREATED->QUEUED.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-002",
+        "M6-004",
+        "M6-005"
+      ],
+      "acceptance_criteria": [
+        "operação atómica/reconciliável",
+        "job_id único",
+        "events coerentes"
+      ],
+      "test_plan": [
+        "happy",
+        "duplicate",
+        "invalid"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-007",
+      "milestone": "M6",
+      "area": "job-manager",
+      "kind": "development",
+      "title": "Implementar dispatch e reserva/libertação de slot",
+      "description": "Integrar Router/Scheduler sem slot leak.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-006",
+        "M5-008",
+        "M3-004",
+        "M6-003"
+      ],
+      "acceptance_criteria": [
+        "reserva antes da execução",
+        "release em todos finais",
+        "attempt criado"
+      ],
+      "test_plan": [
+        "success",
+        "exception",
+        "cancel",
+        "no worker"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-008",
+      "milestone": "M6",
+      "area": "job-manager",
+      "kind": "development",
+      "title": "Implementar retry policy e budgets",
+      "description": "Controlar attempts/model calls/wall time.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-007",
+        "M4-005"
+      ],
+      "acceptance_criteria": [
+        "Nunca excede budget",
+        "backoff config",
+        "non-retryable falha direto"
+      ],
+      "test_plan": [
+        "timeout retry",
+        "auth no retry",
+        "budget exhausted"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-009",
+      "milestone": "M6",
+      "area": "job-manager",
+      "kind": "development",
+      "title": "Implementar cancelamento",
+      "description": "Cancelar queued/running e libertar recursos.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M6-007",
+        "M4-006"
+      ],
+      "acceptance_criteria": [
+        "CANCELLED terminal",
+        "queued sai da fila",
+        "running sinaliza cancel",
+        "slot libertado"
+      ],
+      "test_plan": [
+        "cancel queued",
+        "running delay",
+        "terminal"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-010",
+      "milestone": "M6",
+      "area": "reliability",
+      "kind": "development",
+      "title": "Implementar startup reconciliation",
+      "description": "Reconciliar jobs ativos após crash.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-007",
+        "M6-008"
+      ],
+      "acceptance_criteria": [
+        "sem slot preso",
+        "estado ambíguo explícito",
+        "sem repetir side effect cegamente"
+      ],
+      "test_plan": [
+        "DB com running -> restart"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-011",
+      "milestone": "M6",
+      "area": "reliability",
+      "kind": "development",
+      "title": "Implementar idempotency keys",
+      "description": "Evitar duplicate submit/side effect.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-006",
+        "M6-010"
+      ],
+      "acceptance_criteria": [
+        "mesma key não duplica",
+        "conflitos explicáveis"
+      ],
+      "test_plan": [
+        "submit duplicado",
+        "resposta tardia"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M6-012",
+      "milestone": "M6",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Integration suite do lifecycle",
+      "description": "Provar queue/dispatch/retry/recovery com fake workers + SQLite temporário.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-008",
+        "M6-009",
+        "M6-010",
+        "M6-011"
+      ],
+      "acceptance_criteria": [
+        "sem workers reais",
+        "restart/retry/cancel/slot release",
+        "DB final verificável"
+      ],
+      "test_plan": [
+        "pytest integration"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-001",
+      "milestone": "M7",
+      "area": "adapters",
+      "kind": "development",
+      "title": "Implementar Generic LLM adapter",
+      "description": "Executar generic_llm via Model Client.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-012",
+        "M4-005"
+      ],
+      "acceptance_criteria": [
+        "não conhece JSON do llama-server",
+        "respeita limits",
+        "resultado persistível"
+      ],
+      "test_plan": [
+        "fake success/error"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-002",
+      "milestone": "M7",
+      "area": "adapters",
+      "kind": "development",
+      "title": "Implementar adapter de summarize",
+      "description": "Definir prompt/contrato de resumo.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M7-001",
+        "M5-008"
+      ],
+      "acceptance_criteria": [
+        "entrada limitada",
+        "Huawei preferido",
+        "fallback funciona"
+      ],
+      "test_plan": [
+        "resumo fake",
+        "routing"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-003",
+      "milestone": "M7",
+      "area": "adapters",
+      "kind": "development",
+      "title": "Implementar adapter de classify",
+      "description": "Saída estruturada validável.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M7-001"
+      ],
+      "acceptance_criteria": [
+        "labels/schema definidos",
+        "output inválido tratado"
+      ],
+      "test_plan": [
+        "valid",
+        "invalid label",
+        "malformed"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-004",
+      "milestone": "M7",
+      "area": "adapters",
+      "kind": "development",
+      "title": "Implementar extract estruturado",
+      "description": "Extrair campos segundo schema.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M7-001"
+      ],
+      "acceptance_criteria": [
+        "schema validado",
+        "required fields tratados"
+      ],
+      "test_plan": [
+        "valid",
+        "missing",
+        "extra policy"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-005",
+      "milestone": "M7",
+      "area": "cli",
+      "kind": "development",
+      "title": "Criar CLI mínima submit/status/result",
+      "description": "Primeira interface humana.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M7-001",
+        "M6-002"
+      ],
+      "acceptance_criteria": [
+        "submit cria job",
+        "status lifecycle",
+        "result output/erro",
+        "exit codes úteis"
+      ],
+      "test_plan": [
+        "E2E fake"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-006",
+      "milestone": "M7",
+      "area": "observability",
+      "kind": "development",
+      "title": "Mostrar histórico do job no CLI",
+      "description": "Expor events/attempts.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M7-005",
+        "M6-003",
+        "M6-004"
+      ],
+      "acceptance_criteria": [
+        "eventos cronológicos",
+        "worker/attempt/error sem secrets"
+      ],
+      "test_plan": [
+        "success",
+        "retry/failure"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M7-007",
+      "milestone": "M7",
+      "area": "testing",
+      "kind": "testing",
+      "title": "E2E do serviço genérico com workers reais",
+      "description": "Validar fluxo completo.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M7-002",
+        "M7-003",
+        "M7-005",
+        "M4-007"
+      ],
+      "acceptance_criteria": [
+        "Huawei tarefa leve",
+        "OPPO generic heavy",
+        "resultados persistidos"
+      ],
+      "test_plan": [
+        "um job por tipo"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-001",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "security",
+      "title": "Criar registry/allowlist de repositórios",
+      "description": "Somente repos permitidos recebem coding jobs.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M7-007"
+      ],
+      "acceptance_criteria": [
+        "Repo ID resolve path controlado",
+        "fora da allowlist rejeitado",
+        "main identificada"
+      ],
+      "test_plan": [
+        "allowed",
+        "unknown",
+        "path traversal"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-002",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "development",
+      "title": "Implementar Worktree Manager",
+      "description": "Criar worktree/branch por job.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-001"
+      ],
+      "acceptance_criteria": [
+        "Nunca trabalha em main",
+        "nomes por job_id",
+        "cleanup seguro"
+      ],
+      "test_plan": [
+        "create/list/cleanup fixture"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-003",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "development",
+      "title": "Implementar Context Builder v1",
+      "description": "Usar arquivos explícitos, ripgrep, diff e failures.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-002"
+      ],
+      "acceptance_criteria": [
+        "Inclui fontes relevantes",
+        "regista fontes enviadas",
+        "não lê repo inteiro"
+      ],
+      "test_plan": [
+        "fixture symbol search",
+        "missing file"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-004",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "development",
+      "title": "Implementar budget de contexto",
+      "description": "Limitar bytes/tokens aproximados.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M8-003"
+      ],
+      "acceptance_criteria": [
+        "Nunca excede limite",
+        "prioridade de fontes",
+        "truncation observável"
+      ],
+      "test_plan": [
+        "oversized fixture"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-005",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "architecture",
+      "title": "Escolher e documentar Patch Contract",
+      "description": "Comparar unified diff vs JSON edits.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-003"
+      ],
+      "acceptance_criteria": [
+        "ADR criado",
+        "multi-file",
+        "validável/aplicável/legível"
+      ],
+      "test_plan": [
+        "fixtures válido/inválido"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-006",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "security",
+      "title": "Implementar parser do Patch Contract",
+      "description": "Converter output em estrutura validada.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-005"
+      ],
+      "acceptance_criteria": [
+        "texto extra não executado",
+        "parse failure explícito",
+        "paths normalizados"
+      ],
+      "test_plan": [
+        "valid",
+        "malformed",
+        "traversal"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-007",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "security",
+      "title": "Implementar scope/path validator",
+      "description": "Bloquear paths e limites.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-006"
+      ],
+      "acceptance_criteria": [
+        "allowed/denied paths",
+        "max files",
+        "max diff lines",
+        "secrets bloqueados"
+      ],
+      "test_plan": [
+        ".env",
+        "../",
+        "too many files/lines"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-008",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "development",
+      "title": "Implementar aplicação determinística do patch",
+      "description": "Aplicar somente patch validado na worktree.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-007",
+        "M8-002"
+      ],
+      "acceptance_criteria": [
+        "sem estado parcial silencioso",
+        "git diff previsível"
+      ],
+      "test_plan": [
+        "apply",
+        "conflict",
+        "diagnóstico"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-009",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "security",
+      "title": "Definir verification commands allowlisted",
+      "description": "Mapear command_id para argv controlado.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-001"
+      ],
+      "acceptance_criteria": [
+        "modelo não fornece shell",
+        "commands versionados",
+        "timeouts"
+      ],
+      "test_plan": [
+        "unknown rejected",
+        "known resolved"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-010",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "security",
+      "title": "Implementar Process Runner seguro",
+      "description": "Executar argv sem shell=True.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-009"
+      ],
+      "acceptance_criteria": [
+        "cwd worktree",
+        "timeout",
+        "exit/duration capturados",
+        "sem shell injection"
+      ],
+      "test_plan": [
+        "success",
+        "failure",
+        "timeout",
+        "metacharacters"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-011",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "development",
+      "title": "Implementar Verification Pipeline",
+      "description": "Executar format/lint/typecheck/tests e gerar VerificationResult.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-010",
+        "M2-009"
+      ],
+      "acceptance_criteria": [
+        "ordem previsível",
+        "policy stop/continue",
+        "resultados por check"
+      ],
+      "test_plan": [
+        "all pass",
+        "lint fail",
+        "tests fail",
+        "timeout"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-012",
+      "milestone": "M8",
+      "area": "coding",
+      "kind": "development",
+      "title": "Implementar bounded coding retry loop",
+      "description": "Enviar failures + diff ao modelo dentro dos budgets.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-004",
+        "M8-008",
+        "M8-011",
+        "M6-008"
+      ],
+      "acceptance_criteria": [
+        "max_attempts",
+        "cada tentativa preservada",
+        "escopo revalidado"
+      ],
+      "test_plan": [
+        "fail then success",
+        "exhaust",
+        "non-retryable"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-013",
+      "milestone": "M8",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Criar fixture repo para coding E2E",
+      "description": "Projeto pequeno com bug conhecido.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M0-008"
+      ],
+      "acceptance_criteria": [
+        "bug verificável",
+        "tests fail before/pass after",
+        "forbidden path"
+      ],
+      "test_plan": [
+        "setup reproduzível"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M8-014",
+      "milestone": "M8",
+      "area": "testing",
+      "kind": "testing",
+      "title": "E2E coding v1 com revisão humana",
+      "description": "Worktree -> context -> model -> patch -> verify -> ready.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M8-012",
+        "M8-013"
+      ],
+      "acceptance_criteria": [
+        "main não muda",
+        "checks passam",
+        "merge não automático",
+        "diff revisável"
+      ],
+      "test_plan": [
+        "E2E real",
+        "bad patch"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-001",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "infrastructure",
+      "title": "Instalar/configurar Mosquitto no Raspberry",
+      "description": "Criar bus MQTT local seguro.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M7-007"
+      ],
+      "acceptance_criteria": [
+        "Broker no boot",
+        "auth/network policy",
+        "topics teste"
+      ],
+      "test_plan": [
+        "pub/sub",
+        "restart"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-002",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "architecture",
+      "title": "Definir convenção de topics",
+      "description": "Separar sensor/event de command.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M9-001"
+      ],
+      "acceptance_criteria": [
+        "namespaces separados",
+        "naming documentado",
+        "payload schema versionado"
+      ],
+      "test_plan": [
+        "exemplos válidos"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-003",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar Resource Registry IoT",
+      "description": "Registar recursos, ações, parâmetros e risco.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M2-010",
+        "M9-002"
+      ],
+      "acceptance_criteria": [
+        "unknown rejeitado",
+        "LOW/MEDIUM/HIGH",
+        "metadata de override"
+      ],
+      "test_plan": [
+        "fixtures",
+        "unknown action",
+        "invalid params"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-004",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar normalização de eventos MQTT",
+      "description": "Converter payload em input do domínio.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M9-002",
+        "M9-003"
+      ],
+      "acceptance_criteria": [
+        "schema validado",
+        "event_id/idempotency",
+        "payload inválido não vira job"
+      ],
+      "test_plan": [
+        "valid",
+        "bad JSON",
+        "missing"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-005",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar adapter iot_intent",
+      "description": "Huawei converte contexto em ActionProposal.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M9-004",
+        "M7-003",
+        "M2-010"
+      ],
+      "acceptance_criteria": [
+        "schema obrigatório",
+        "sem execução",
+        "fallback respeitado"
+      ],
+      "test_plan": [
+        "valid",
+        "malformed",
+        "Huawei offline"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-006",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "security",
+      "title": "Implementar Policy Gate",
+      "description": "Avaliar proposal contra registry/risco/autonomia.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M9-003",
+        "M9-005"
+      ],
+      "acceptance_criteria": [
+        "ALLOW/DENY com razão",
+        "unknown/expired deny",
+        "HIGH sem autonomia"
+      ],
+      "test_plan": [
+        "matriz policies"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-007",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar Shadow Executor",
+      "description": "Registar ação que seria executada sem side effect.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M9-006"
+      ],
+      "acceptance_criteria": [
+        "zero command publish",
+        "proposal/decision/reason guardados",
+        "auditável"
+      ],
+      "test_plan": [
+        "spy MQTT"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-008",
+      "milestone": "M9",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar idempotência IoT",
+      "description": "Evitar duplicata por redelivery/retry.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M9-004",
+        "M9-007",
+        "M6-011"
+      ],
+      "acceptance_criteria": [
+        "mesmo event não duplica",
+        "duplicata auditável"
+      ],
+      "test_plan": [
+        "evento duas vezes",
+        "retry"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-009",
+      "milestone": "M9",
+      "area": "reliability",
+      "kind": "testing",
+      "title": "Definir comportamento IoT sem Huawei",
+      "description": "IoT básico continua sem LLM.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M9-005",
+        "M9-007"
+      ],
+      "acceptance_criteria": [
+        "broker/regras continuam",
+        "smart job degrada seguro"
+      ],
+      "test_plan": [
+        "parar Huawei"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M9-010",
+      "milestone": "M9",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Executar período de shadow mode",
+      "description": "Rever decisões antes de side effects.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M9-007",
+        "M9-008",
+        "M9-009"
+      ],
+      "acceptance_criteria": [
+        "decisões explicáveis",
+        "false positives revistos",
+        "policy ajustada"
+      ],
+      "test_plan": [
+        "cenários reais/fake",
+        "sample review"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-001",
+      "milestone": "M10",
+      "area": "iot",
+      "kind": "development",
+      "title": "Definir interface do IoT Executor real",
+      "description": "Separar executor do LLM/policy.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M9-010"
+      ],
+      "acceptance_criteria": [
+        "recebe ação autorizada",
+        "não interpreta linguagem",
+        "resultado estruturado"
+      ],
+      "test_plan": [
+        "fake executor"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-002",
+      "milestone": "M10",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar primeiro recurso LOW risk",
+      "description": "Suportar uma luz/fan/notificação.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M10-001",
+        "M9-003"
+      ],
+      "acceptance_criteria": [
+        "um recurso inicial",
+        "ações mínimas",
+        "resultado capturado"
+      ],
+      "test_plan": [
+        "fake",
+        "smoke real supervisionado"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-003",
+      "milestone": "M10",
+      "area": "security",
+      "kind": "development",
+      "title": "Implementar kill switch global",
+      "description": "Bloquear side effects imediatamente.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M10-001"
+      ],
+      "acceptance_criteria": [
+        "default seguro",
+        "mudança auditada",
+        "executor bloqueado"
+      ],
+      "test_plan": [
+        "on/off durante proposal"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-004",
+      "milestone": "M10",
+      "area": "iot",
+      "kind": "development",
+      "title": "Implementar manual override",
+      "description": "Ação humana explícita separada da autonomia.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M10-002",
+        "M10-003"
+      ],
+      "acceptance_criteria": [
+        "auditada",
+        "policy de conflito definida"
+      ],
+      "test_plan": [
+        "manual",
+        "conflito"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-005",
+      "milestone": "M10",
+      "area": "iot",
+      "kind": "development",
+      "title": "Executar idempotência no side effect real",
+      "description": "Evitar repetir ação em retry.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M10-002",
+        "M9-008"
+      ],
+      "acceptance_criteria": [
+        "retry não duplica quando confirmado",
+        "estado ambíguo explícito"
+      ],
+      "test_plan": [
+        "timeout pós-publish",
+        "duplicate"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-006",
+      "milestone": "M10",
+      "area": "observability",
+      "kind": "development",
+      "title": "Adicionar audit log de execução IoT",
+      "description": "Guardar proposal/policy/execution/result.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M10-002",
+        "M6-004"
+      ],
+      "acceptance_criteria": [
+        "reconstrói quem/o quê/por quê/quando",
+        "sem secrets"
+      ],
+      "test_plan": [
+        "query por job/resource"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-007",
+      "milestone": "M10",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Criar fake actuator",
+      "description": "Simular ack/timeout/offline/duplicado.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M10-001"
+      ],
+      "acceptance_criteria": [
+        "cenários determinísticos",
+        "sem hardware real"
+      ],
+      "test_plan": [
+        "success",
+        "timeout",
+        "offline",
+        "duplicate"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M10-008",
+      "milestone": "M10",
+      "area": "testing",
+      "kind": "testing",
+      "title": "E2E LOW-risk execution",
+      "description": "Evento -> LLM -> proposal -> policy -> executor -> audit.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M10-003",
+        "M10-005",
+        "M10-006",
+        "M10-007"
+      ],
+      "acceptance_criteria": [
+        "ação uma vez",
+        "kill switch bloqueia",
+        "falha não duplica"
+      ],
+      "test_plan": [
+        "E2E real",
+        "fake failure"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-001",
+      "milestone": "M11",
+      "area": "observability",
+      "kind": "development",
+      "title": "Padronizar structured logging",
+      "description": "Logs com contexto IDs.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M7-006"
+      ],
+      "acceptance_criteria": [
+        "parseável",
+        "IDs presentes",
+        "secrets redacted"
+      ],
+      "test_plan": [
+        "snapshot",
+        "redaction"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-002",
+      "milestone": "M11",
+      "area": "observability",
+      "kind": "development",
+      "title": "Persistir/agregar métricas mínimas",
+      "description": "Jobs/retries/queue/duration/worker/http/tokens/verification.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M11-001",
+        "M6-004"
+      ],
+      "acceptance_criteria": [
+        "consultáveis sem Prometheus",
+        "definições documentadas"
+      ],
+      "test_plan": [
+        "fixture metrics"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-003",
+      "milestone": "M11",
+      "area": "reliability",
+      "kind": "development",
+      "title": "Implementar graceful shutdown",
+      "description": "Parar intake e fechar recursos sem perder state.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M6-010"
+      ],
+      "acceptance_criteria": [
+        "SIGTERM seguro",
+        "slots reconciliáveis",
+        "DB limpa"
+      ],
+      "test_plan": [
+        "idle",
+        "during running"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-004",
+      "milestone": "M11",
+      "area": "reliability",
+      "kind": "development",
+      "title": "Implementar quarantine/circuit breaker",
+      "description": "Evitar martelar worker falho.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M3-007",
+        "M5-003"
+      ],
+      "acceptance_criteria": [
+        "threshold config",
+        "quarantine observável",
+        "recovery"
+      ],
+      "test_plan": [
+        "fail->quarantine->recover"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-005",
+      "milestone": "M11",
+      "area": "reliability",
+      "kind": "development",
+      "title": "Implementar deadlines end-to-end",
+      "description": "Propagar deadline à queue/scheduling/HTTP.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M6-008",
+        "M4-006"
+      ],
+      "acceptance_criteria": [
+        "expirado não inicia side effect",
+        "HTTP respeita deadline",
+        "estado explícito"
+      ],
+      "test_plan": [
+        "expire queue",
+        "expire model"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-006",
+      "milestone": "M11",
+      "area": "operations",
+      "kind": "infrastructure",
+      "title": "Implementar backup/restore SQLite",
+      "description": "Backup consistente e restaurável.",
+      "status": "backlog",
+      "priority": "high",
+      "depends_on": [
+        "M6-012"
+      ],
+      "acceptance_criteria": [
+        "restore documentado",
+        "permissões adequadas",
+        "integridade"
+      ],
+      "test_plan": [
+        "data->backup->restore->compare"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-007",
+      "milestone": "M11",
+      "area": "operations",
+      "kind": "development",
+      "title": "Implementar retenção de logs/artifacts",
+      "description": "Evitar crescimento ilimitado.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M11-001"
+      ],
+      "acceptance_criteria": [
+        "policy idade/tamanho",
+        "não apaga estado necessário",
+        "dry-run"
+      ],
+      "test_plan": [
+        "fixtures antigas/novas"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-008",
+      "milestone": "M11",
+      "area": "testing",
+      "kind": "testing",
+      "title": "Executar chaos/failure matrix",
+      "description": "Reboot, network loss, kill server/orchestrator, timeout, bad HTTP, SQLite busy.",
+      "status": "backlog",
+      "priority": "critical",
+      "depends_on": [
+        "M11-003",
+        "M11-004",
+        "M11-005",
+        "M11-006",
+        "M10-008",
+        "M8-014"
+      ],
+      "acceptance_criteria": [
+        "nenhum job desaparece",
+        "nenhum slot preso",
+        "nenhum side effect perigoso duplica",
+        "logs explicam"
+      ],
+      "test_plan": [
+        "matrix executada"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M11-009",
+      "milestone": "M11",
+      "area": "tooling",
+      "kind": "development",
+      "title": "Criar comando explain job",
+      "description": "Agregar state/attempts/events/scheduler/error.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M11-001",
+        "M7-006",
+        "M5-007"
+      ],
+      "acceptance_criteria": [
+        "responde o que aconteceu",
+        "success/retry/failure"
+      ],
+      "test_plan": [
+        "snapshots"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-001",
+      "milestone": "M12",
+      "area": "coding",
+      "kind": "development",
+      "title": "Adicionar decomposição bounded de coding tasks",
+      "description": "Planner cria subtasks com budgets/DAG.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M8-014",
+        "M11-008"
+      ],
+      "acceptance_criteria": [
+        "max depth/count",
+        "DAG sem ciclos",
+        "propagação definida"
+      ],
+      "test_plan": [
+        "simple",
+        "cycle",
+        "budget"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-002",
+      "milestone": "M12",
+      "area": "coding",
+      "kind": "development",
+      "title": "Adicionar review por segundo worker",
+      "description": "Reviewer separado avalia diff/evidência.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M8-014",
+        "M5-008"
+      ],
+      "acceptance_criteria": [
+        "não aplica patch",
+        "output estruturado",
+        "offline tratado"
+      ],
+      "test_plan": [
+        "approve/reject",
+        "offline"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-003",
+      "milestone": "M12",
+      "area": "automation",
+      "kind": "development",
+      "title": "Adicionar scheduled automations",
+      "description": "Criar jobs por calendário/evento.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M10-008",
+        "M11-008"
+      ],
+      "acceptance_criteria": [
+        "schedule persistente",
+        "restart sem duplicata",
+        "policy/kill switch"
+      ],
+      "test_plan": [
+        "restart around trigger"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-004",
+      "milestone": "M12",
+      "area": "notifications",
+      "kind": "development",
+      "title": "Adicionar fluxo de aprovação humana",
+      "description": "Pending approval para risco/coding.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M10-008",
+        "M8-014"
+      ],
+      "acceptance_criteria": [
+        "approve/reject/expiry auditados",
+        "adapter não contém policy"
+      ],
+      "test_plan": [
+        "approve",
+        "reject",
+        "timeout"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-005",
+      "milestone": "M12",
+      "area": "workers",
+      "kind": "research",
+      "title": "Avaliar modelo menor no Huawei",
+      "description": "Benchmark 0.5B/1B para intents/classify.",
+      "status": "backlog",
+      "priority": "low",
+      "depends_on": [
+        "M7-007",
+        "M9-010"
+      ],
+      "acceptance_criteria": [
+        "benchmark comparável",
+        "dataset local",
+        "decisão documentada"
+      ],
+      "test_plan": [
+        "latency/tps/quality"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-006",
+      "milestone": "M12",
+      "area": "retrieval",
+      "kind": "development",
+      "title": "Adicionar Tree-sitter/LSP se necessário",
+      "description": "Melhorar contexto somente com problema medido.",
+      "status": "backlog",
+      "priority": "low",
+      "depends_on": [
+        "M8-014"
+      ],
+      "acceptance_criteria": [
+        "problema documentado",
+        "benefício medido",
+        "fallback textual"
+      ],
+      "test_plan": [
+        "cross-file fixture",
+        "benchmark"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-007",
+      "milestone": "M12",
+      "area": "scheduler",
+      "kind": "development",
+      "title": "Adicionar prioridades, quotas e fairness",
+      "description": "Evoluir scheduler sob competição real.",
+      "status": "backlog",
+      "priority": "low",
+      "depends_on": [
+        "M11-002",
+        "M5-008"
+      ],
+      "acceptance_criteria": [
+        "starvation mitigada",
+        "quota config",
+        "trace preservado"
+      ],
+      "test_plan": [
+        "load simulation"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-008",
+      "milestone": "M12",
+      "area": "persistence",
+      "kind": "development",
+      "title": "Criar estratégia de migração de schemas",
+      "description": "Evoluir SQLite/payloads com segurança.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M11-006",
+        "M2-011"
+      ],
+      "acceptance_criteria": [
+        "migration table",
+        "forward test",
+        "backup pré-change"
+      ],
+      "test_plan": [
+        "v1->v2",
+        "failure procedure"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-009",
+      "milestone": "M12",
+      "area": "project-intelligence",
+      "kind": "development",
+      "title": "Implementar File/Git Analyzer inicial",
+      "description": "Scan + diff/change detector determinístico.",
+      "status": "backlog",
+      "priority": "medium",
+      "depends_on": [
+        "M8-014"
+      ],
+      "acceptance_criteria": [
+        "ignore paths",
+        "arquivos alterados",
+        "sem LLM"
+      ],
+      "test_plan": [
+        "fixture commits/diffs"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-010",
+      "milestone": "M12",
+      "area": "project-intelligence",
+      "kind": "development",
+      "title": "Implementar Project Graph mínimo",
+      "description": "Representar modules/symbols/dependencies sem embeddings.",
+      "status": "backlog",
+      "priority": "low",
+      "depends_on": [
+        "M12-009",
+        "M12-006"
+      ],
+      "acceptance_criteria": [
+        "entidades/arestas têm evidência",
+        "queries básicas"
+      ],
+      "test_plan": [
+        "fixture graph"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-011",
+      "milestone": "M12",
+      "area": "project-intelligence",
+      "kind": "development",
+      "title": "Adicionar documentação incremental",
+      "description": "Criar tasks de docs afetadas.",
+      "status": "backlog",
+      "priority": "low",
+      "depends_on": [
+        "M12-009",
+        "M12-010",
+        "M12-002"
+      ],
+      "acceptance_criteria": [
+        "docs em Git",
+        "tasks limitadas",
+        "review com evidência"
+      ],
+      "test_plan": [
+        "fixture commit->docs"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    },
+    {
+      "id": "M12-012",
+      "milestone": "M12",
+      "area": "project-intelligence",
+      "kind": "research",
+      "title": "Avaliar PostgreSQL/pgvector/Redis com critérios medidos",
+      "description": "Só migrar quando baseline atingir limites reais.",
+      "status": "backlog",
+      "priority": "low",
+      "depends_on": [
+        "M11-002",
+        "M12-010"
+      ],
+      "acceptance_criteria": [
+        "critérios documentados",
+        "benchmark/limitação real",
+        "ADR"
+      ],
+      "test_plan": [
+        "comparar workload real"
+      ],
+      "deliverables": [],
+      "tags": [],
+      "notes": ""
+    }
+  ]
+}

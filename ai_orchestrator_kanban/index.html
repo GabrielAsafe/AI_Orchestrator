@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Orchestrator Kanban</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>AI Orchestrator Kanban</h1>
+      <p id="projectSubtitle">Plano de implementação</p>
+    </div>
+    <div class="actions">
+      <button id="promoteReadyBtn" title="Move para Ready tarefas de Backlog cujas dependências estão Done">Promover elegíveis</button>
+      <button id="importBtn">Importar JSON</button>
+      <button id="exportBtn">Exportar JSON</button>
+      <button id="resetBtn" class="danger-ghost">Recarregar tasks.json</button>
+      <input id="importFile" type="file" accept=".json,application/json" hidden />
+    </div>
+  </header>
+
+  <section class="filters">
+    <input id="searchInput" type="search" placeholder="Pesquisar ID, título, descrição, tag..." />
+    <select id="milestoneFilter"><option value="">Todos os milestones</option></select>
+    <select id="areaFilter"><option value="">Todas as áreas</option></select>
+    <select id="priorityFilter">
+      <option value="">Todas as prioridades</option>
+      <option value="critical">Critical</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <label class="toggle"><input id="hideDone" type="checkbox" /> ocultar Done</label>
+    <div id="summary" class="summary"></div>
+  </section>
+
+  <main id="board" class="board" aria-live="polite"></main>
+
+  <dialog id="taskDialog">
+    <form method="dialog" class="dialog-shell">
+      <div class="dialog-head">
+        <div>
+          <div id="detailMeta" class="detail-meta"></div>
+          <h2 id="detailTitle"></h2>
+        </div>
+        <button value="cancel" class="icon-btn" aria-label="Fechar">×</button>
+      </div>
+      <p id="detailDescription"></p>
+
+      <div class="detail-grid">
+        <section>
+          <h3>Critérios de aceitação</h3>
+          <ul id="detailAcceptance"></ul>
+        </section>
+        <section>
+          <h3>Testes</h3>
+          <ul id="detailTests"></ul>
+        </section>
+        <section>
+          <h3>Dependências</h3>
+          <ul id="detailDeps"></ul>
+        </section>
+        <section>
+          <h3>Deliverables</h3>
+          <ul id="detailDeliverables"></ul>
+        </section>
+      </div>
+
+      <label class="field">
+        <span>Status</span>
+        <select id="detailStatus"></select>
+      </label>
+
+      <label class="field">
+        <span>Notas de trabalho</span>
+        <textarea id="detailNotes" rows="6" placeholder="Cole aqui decisões, comandos, erros, links, resultados de testes..."></textarea>
+      </label>
+
+      <div class="dialog-actions">
+        <button id="saveDetailBtn" value="cancel" type="button">Guardar alterações</button>
+        <button value="cancel">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="cardTemplate">
+    <article class="card" draggable="true">
+      <div class="card-top">
+        <span class="task-id"></span>
+        <span class="priority"></span>
+      </div>
+      <h3 class="card-title"></h3>
+      <p class="card-desc"></p>
+      <div class="chips"></div>
+      <div class="dependency-line"></div>
+      <div class="card-actions">
+        <button class="prev-btn" type="button" title="Mover para coluna anterior">←</button>
+        <button class="details-btn" type="button">Detalhes</button>
+        <button class="next-btn" type="button" title="Mover para próxima coluna">→</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
