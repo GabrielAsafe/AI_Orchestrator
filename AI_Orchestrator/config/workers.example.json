@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "workers": [
+    {
+      "id": "fake-local",
+      "endpoint": "http://127.0.0.1:8089",
+      "capabilities": ["generic_text", "summarize", "classify", "iot_intent", "coding", "patch_generation"],
+      "model_name": "fake",
+      "context_limit": 2048,
+      "max_parallel": 1,
+      "performance_tier": 1,
+      "enabled": true,
+      "timeout_seconds": 10
+    }
+  ]
+}

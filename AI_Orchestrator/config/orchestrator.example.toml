@@ -1,0 +1,19 @@
+schema_version = 1
+
+[server]
+host = "127.0.0.1"
+port = 8080
+
+[storage]
+db_path = "data/orchestrator.db"
+
+[scheduler]
+max_attempts = 2
+idle_seconds = 2
+
+[iot]
+mode = "shadow"
+autonomy_enabled = false
+
+[logging]
+level = "INFO"

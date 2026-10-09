@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+.env
+*.secret
+*.pem
+*.key
+config/orchestrator.toml
+config/workers.json
+data/
+artifacts/

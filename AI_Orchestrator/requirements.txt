@@ -1,0 +1,4 @@
+# Apenas Python 3.9; stdlib para a aplicação em runtime.
+tomli>=1.2,<3; python_version < "3.11"
+# pytest é dependência de desenvolvimento. ARMv6: instalar via pip/piwheels se necessário.
+pytest>=7,<9

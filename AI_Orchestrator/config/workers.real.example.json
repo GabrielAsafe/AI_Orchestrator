@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "workers": [
+    {
+      "id": "oppo",
+      "endpoint": "http://ENDERECO_DO_OPPO:8080",
+      "token_env": "OPPO_LLM_API_KEY",
+      "capabilities": ["generic_text", "summarize", "classify", "coding", "patch_generation"],
+      "model_name": "local-model",
+      "context_limit": 4096,
+      "max_parallel": 1,
+      "performance_tier": 2,
+      "timeout_seconds": 120
+    },
+    {
+      "id": "huawei",
+      "endpoint": "http://ENDERECO_DO_HUAWEI:8080",
+      "token_env": "HUAWEI_LLM_API_KEY",
+      "capabilities": ["generic_text", "summarize", "classify", "iot_intent"],
+      "model_name": "local-model",
+      "context_limit": 2048,
+      "max_parallel": 1,
+      "performance_tier": 1,
+      "timeout_seconds": 120
+    }
+  ]
+}
